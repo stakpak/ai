@@ -42,7 +42,7 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
         .temperature(0.7)
         .build();
     
-    let response = client.generate("gpt-4", request).await?;
+    let response = client.generate("gpt-5", request).await?;
     println!("Response: {}", response.text());
     
     Ok(())
@@ -60,7 +60,7 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
     let client = Inference::new();
     let request = GenerateRequest::simple("Write a haiku");
     
-    let mut stream = client.stream("gpt-4", request).await?;
+    let mut stream = client.stream("gpt-5", request).await?;
     
     while let Some(event) = stream.next().await {
         match event? {
@@ -78,9 +78,9 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
 
 | Provider | Status | Models | Features |
 |----------|--------|--------|----------|
-| **OpenAI** | ✅ | GPT-4, GPT-3.5 | Streaming, Tools, Vision |
-| **Anthropic** | ✅ | Claude 3.5, Claude 3 | Streaming, Extended Thinking |
-| **Google Gemini** | ✅ | Gemini 2.0, 1.5, 1.0 | Streaming, Vision |
+| **OpenAI** | ✅ | GPT-5, GPT-4.1, o3/o4, GPT-4o | Streaming, Tools, Vision, Reasoning |
+| **Anthropic** | ✅ | Claude 4.5, Claude 4.1 | Streaming, Extended Thinking |
+| **Google Gemini** | ✅ | Gemini 3, Gemini 2.5, Gemini 2.0 | Streaming, Vision, Agentic Coding |
 
 See [PROVIDERS.md](PROVIDERS.md) for detailed provider documentation.
 
@@ -146,7 +146,7 @@ let request = GenerateRequest::builder()
     .temperature(0.7)
     .build();
 
-let response = client.generate("gpt-4", request).await?;
+let response = client.generate("gpt-5", request).await?;
 println!("{}", response.text());
 ```
 
@@ -161,7 +161,7 @@ let request = GenerateRequest::builder()
     .max_tokens(500)  // Required for Anthropic
     .build();
 
-let response = client.generate("claude-3-5-sonnet-20241022", request).await?;
+let response = client.generate("claude-sonnet-4-5-20250929", request).await?;
 println!("{}", response.text());
 ```
 
@@ -176,7 +176,7 @@ let request = GenerateRequest::builder()
     .temperature(0.7)
     .build();
 
-let response = client.generate("gemini-2.0-flash-exp", request).await?;
+let response = client.generate("gemini-2.5-flash", request).await?;
 println!("{}", response.text());
 ```
 
@@ -189,7 +189,7 @@ let request = GenerateRequest::builder()
     .build();
 
 // Try all providers
-for model in ["gpt-4", "claude-3-5-sonnet-20241022", "gemini-2.0-flash-exp"] {
+for model in ["gpt-5", "claude-sonnet-4-5-20250929", "gemini-2.5-flash"] {
     if let Ok(response) = client.generate(model, request.clone()).await {
         println!("{}: {}", model, response.text());
     }
