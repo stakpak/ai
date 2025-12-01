@@ -1,0 +1,4 @@
+/target
+
+# Stakpak session files
+.stakpak/session*

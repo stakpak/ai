@@ -1,0 +1,53 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+env:
+  CARGO_TERM_COLOR: always
+
+jobs:
+  rust-ci:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Cache Cargo Dependencies
+        uses: actions/cache@v4
+        with:
+          path: |
+            ~/.cargo/bin/
+            ~/.cargo/registry/index/
+            ~/.cargo/registry/cache/
+            ~/.cargo/git/db/
+            ./target/
+          key: ${{ runner.os }}-cargo-${{ hashFiles('Cargo.lock') }}
+
+      - name: Check
+        run: cargo check --verbose
+
+      - name: Format Check
+        run: cargo fmt -- --check
+
+      - name: Lint
+        run: cargo clippy
+
+      - name: Build
+        run: cargo build --verbose
+
+      - name: Test
+        run: cargo test --verbose
+
+      - name: Test Docs
+        run: cargo test --doc --verbose
+
+      - name: Check Examples Compile
+        run: |
+          for example in examples/*.rs; do
+            name=$(basename "$example" .rs)
+            echo "Checking $name..."
+            cargo check --example "$name"
+          done
