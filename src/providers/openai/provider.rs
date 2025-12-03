@@ -79,7 +79,12 @@ impl Provider for OpenAIProvider {
             )));
         }
 
-        let openai_resp: ChatCompletionResponse = response.json().await?;
+        let response_text = response.text().await?;
+        println!("Response body: {}", response_text);
+
+        let openai_resp: ChatCompletionResponse = serde_json::from_str(&response_text)?;
+        println!("Parsed response: {:#?}", openai_resp);
+
         from_openai_response(openai_resp)
     }
 
