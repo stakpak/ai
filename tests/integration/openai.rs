@@ -11,7 +11,7 @@ async fn test_openai_generate() {
     let client = Inference::new();
 
     let mut request = GenerateRequest::new(
-        "gpt-3.5-turbo",
+        "gpt-5-mini-2025-08-07",
         vec![Message {
             role: Role::User,
             content: "Say 'Hello, World!' and nothing else".into(),
@@ -19,9 +19,11 @@ async fn test_openai_generate() {
         }],
     );
     request.options.temperature = Some(0.0);
-    request.options.max_tokens = Some(10);
+    request.options.max_tokens = Some(5000);
 
     let response = client.generate(&request).await;
+
+    println!("Response: {:#?}", response);
 
     assert!(response.is_ok(), "Request failed: {:?}", response.err());
     let response = response.unwrap();
@@ -36,7 +38,7 @@ async fn test_openai_streaming() {
     let client = Inference::new();
 
     let mut request = GenerateRequest::new(
-        "gpt-3.5-turbo",
+        "gpt-5-nano-2025-08-07",
         vec![Message {
             role: Role::User,
             content: "Count from 1 to 3".into(),
@@ -44,7 +46,7 @@ async fn test_openai_streaming() {
         }],
     );
     request.options.temperature = Some(0.0);
-    request.options.max_tokens = Some(20);
+    request.options.max_tokens = Some(5000);
 
     let stream = client.stream(&request).await;
     assert!(stream.is_ok(), "Stream creation failed: {:?}", stream.err());
