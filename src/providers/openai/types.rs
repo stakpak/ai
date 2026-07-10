@@ -2,6 +2,16 @@
 
 use serde::{Deserialize, Serialize};
 
+pub static OPENAI_REASONING_MODELS: &[&str] = &[
+    "o1-2024-12-17",
+    "o3-2025-04-16",
+    "o3-mini-2025-01-31",
+    "o4-mini-2025-04-16",
+    "gpt-5-2025-08-07",
+    "gpt-5-mini-2025-08-07",
+    "gpt-5-nano-2025-08-07",
+];
+
 /// Configuration for OpenAI provider
 #[derive(Debug, Clone)]
 pub struct OpenAIConfig {
@@ -48,9 +58,7 @@ pub struct ChatCompletionRequest {
     pub model: String,
     pub messages: Vec<ChatMessage>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub temperature: Option<f32>,
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub max_tokens: Option<u32>,
+    pub max_completion_tokens: Option<u32>,
     #[serde(skip_serializing_if = "Option::is_none")]
     pub top_p: Option<f32>,
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -61,6 +69,23 @@ pub struct ChatCompletionRequest {
     pub tools: Option<Vec<serde_json::Value>>,
     #[serde(skip_serializing_if = "Option::is_none")]
     pub tool_choice: Option<serde_json::Value>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub temperature: Option<f32>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub reasoning_effort: Option<OpenAIReasoningEffort>,
+}
+
+#[derive(Serialize, Deserialize, Debug, Clone, PartialEq, Default)]
+pub enum OpenAIReasoningEffort {
+    #[serde(rename = "minimal")]
+    Minimal,
+    #[serde(rename = "low")]
+    Low,
+    #[default]
+    #[serde(rename = "medium")]
+    Medium,
+    #[serde(rename = "high")]
+    High,
 }
 
 /// OpenAI chat message

@@ -34,16 +34,27 @@ pub fn to_openai_request(req: &GenerateRequest, stream: bool) -> ChatCompletionR
         }),
     });
 
+    let mut temperature = req.options.temperature;
+    let mut top_p = req.options.top_p;
+    let mut reasoning_effort = None;
+
+    if OPENAI_REASONING_MODELS.contains(&req.model.as_str()) {
+        temperature = None;
+        top_p = None;
+        reasoning_effort = Some(OpenAIReasoningEffort::Medium);
+    }
+
     ChatCompletionRequest {
         model: req.model.clone(),
         messages: req.messages.iter().map(to_openai_message).collect(),
-        temperature: req.options.temperature,
-        max_tokens: req.options.max_tokens,
-        top_p: req.options.top_p,
+        temperature,
+        max_completion_tokens: req.options.max_tokens,
+        top_p,
         stop: req.options.stop_sequences.clone(),
         stream: Some(stream),
         tools,
         tool_choice,
+        reasoning_effort,
     }
 }
 
